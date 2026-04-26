@@ -2,7 +2,7 @@
 
 Automatically download and organize course transcripts from Udemy and YouTube using yt-dlp, orchestrated by a Gemini 2.0 Flash AI agent.
 
-> **v1.1 — Udemy + YouTube supported.** More platforms planned for future releases.
+> **v1.2 — Udemy + YouTube supported. Multi-provider LLM support (Groq default).** More platforms planned for future releases.
 
 ## Features
 
@@ -10,7 +10,7 @@ Automatically download and organize course transcripts from Udemy and YouTube us
 - Course folder auto-named from the URL — no manual input needed
 - Raw `.vtt` files and clean readable `.txt` files saved in separate folders
 - Uses browser cookies for auth — no passwords stored in code
-- Gemini 2.0 Flash agent auto-detects the platform and orchestrates the workflow
+- **Multi-provider LLM support** — Groq (default, free), Gemini, Ollama (local), OpenRouter
 
 ## Output Structure
 
@@ -32,8 +32,8 @@ output/
 
 - Python 3.10+
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) (`pip install yt-dlp`)
-- Google Gemini API key
-- Active Udemy session in your browser (Chrome, Firefox, Safari, or Edge)
+- An LLM API key — **Groq is free** at [console.groq.com](https://console.groq.com)
+- Active Udemy/YouTube session in your browser (Chrome, Firefox, Safari, or Edge)
 
 ## Setup
 
@@ -93,7 +93,8 @@ Set `COOKIE_BROWSER=chrome` (or `firefox`, `safari`, `edge`) in your `.env`.
 ```
 coursenotes-ai/
 ├── agent/
-│   └── agent.py          # Gemini 2.0 Flash agent + tool calling loop
+│   ├── agent.py          # Agentic tool-calling loop
+│   └── llm_provider.py   # Multi-provider LLM factory (Groq/Gemini/Ollama/OpenRouter)
 ├── tools/
 │   ├── ytdlp_tools.py    # yt-dlp wrapper + course name extraction
 │   └── vtt_to_text.py    # VTT → clean .txt converter
@@ -105,12 +106,29 @@ coursenotes-ai/
 └── .env.example
 ```
 
+## LLM Providers
+
+| Provider | Free Tier | API Key needed | Notes |
+|---|---|---|---|
+| **Groq** *(default)* | ✅ Yes | ✅ Yes | Fastest, [console.groq.com](https://console.groq.com) |
+| Gemini | ✅ Yes | ✅ Yes | [aistudio.google.com](https://aistudio.google.com) |
+| Ollama | ✅ Free | ❌ No | Fully local, needs GPU/CPU |
+| OpenRouter | ✅ Free models | ✅ Yes | [openrouter.ai](https://openrouter.ai) |
+
+Switch provider in `.env`:
+```
+LLM_PROVIDER=groq   # or gemini / ollama / openrouter
+LLM_API_KEY=your_key
+LLM_MODEL=          # leave blank for provider default
+```
+
 ## Roadmap
 
 - [x] Udemy transcript download
 - [x] YouTube video and playlist transcript download
 - [x] Clean `.txt` output with separate `vtt/` and `txt/` folders
 - [x] Auto course folder naming from URL
+- [x] Multi-provider LLM support (Groq, Gemini, Ollama, OpenRouter)
 - [ ] Coursera and LinkedIn Learning support
 - [ ] Whisper fallback for courses without captions
 - [ ] Markdown export for study notes
