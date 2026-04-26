@@ -24,6 +24,7 @@ def vtt_to_clean_text(vtt_path: str) -> str:
     lines = content.splitlines()
     clean_lines = []
     seen = set()
+    last_line = None
 
     for line in lines:
         # Skip WebVTT header
@@ -44,11 +45,15 @@ def vtt_to_clean_text(vtt_path: str) -> str:
 
         if not line:
             continue
-        # Deduplicate consecutive repeated lines (auto-caption artifact)
+        # Always skip consecutive identical lines (auto-caption artifact)
+        if line == last_line:
+            continue
+        # Skip if already seen in current window
         if line not in seen:
             clean_lines.append(line)
             seen.add(line)
-        # Reset seen set at natural sentence endings to allow re-use of short phrases
+            last_line = line
+        # Reset seen window at sentence endings to allow phrases to recur naturally
         if line.endswith((".", "!", "?")):
             seen.clear()
 
