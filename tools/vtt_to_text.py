@@ -52,7 +52,8 @@ def convert_vtt_to_txt(vtt_path: str, txt_folder: str) -> str:
     Returns the path of the saved .txt file.
     """
     os.makedirs(txt_folder, exist_ok=True)
-    base_name = os.path.splitext(os.path.basename(vtt_path))[0] + ".txt"
+    # Strip language suffix e.g. "My Video.en.vtt" -> "My Video.txt"
+    base_name = re.sub(r"\.[a-z]{2,5}$", "", os.path.splitext(os.path.basename(vtt_path))[0]) + ".txt"
     txt_path = os.path.join(txt_folder, base_name)
     clean_text = vtt_to_clean_text(vtt_path)
     with open(txt_path, "w", encoding="utf-8") as f:

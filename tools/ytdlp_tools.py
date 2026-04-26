@@ -6,41 +6,49 @@ from config import OUTPUT_DIR, COOKIE_BROWSER, UDEMY_USERNAME, UDEMY_PASSWORD
 from tools.vtt_to_text import convert_vtt_to_txt, convert_all_vtt_in_folder
 
 
+def slugify(text: str, max_length: int = 60) -> str:
+    """Convert a title into a clean folder-safe slug."""
+    text = text.strip()
+    # Replace special characters and spaces with hyphens
+    text = re.sub(r"[^\w\s\-]", "", text)
+    text = re.sub(r"[\s_]+", "-", text)
+    text = re.sub(r"-+", "-", text)
+    return text[:max_length].strip("-")
+
+
+def fetch_title(url: str) -> str | None:
+    """Fetch the video/playlist title from yt-dlp without downloading."""
+    cmd = [
+        "yt-dlp",
+        "--cookies-from-browser", COOKIE_BROWSER,
+        "--print", "%(title)s",
+        "--flat-playlist",
+        "--playlist-items", "1",
+        url
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode == 0 and result.stdout.strip():
+        return result.stdout.strip().splitlines()[0]
+    return None
+
+
 def extract_course_name(course_url: str) -> str:
     """
-    Auto-derive a folder-safe course name from a supported URL.
-
-    Supported patterns:
-      Udemy:    https://www.udemy.com/course/python-bootcamp/     -> python-bootcamp
-      YouTube playlist: https://youtube.com/playlist?list=PLxxx  -> playlist-PLxxx
-      YouTube video:    https://youtube.com/watch?v=abc123        -> video-abc123
-      YouTube channel:  https://youtube.com/@channelname          -> channelname
-      Fallback: sanitized URL slug
+    Derive a meaningful folder name from the URL.
+    For Udemy: uses the course slug from the URL.
+    For YouTube: fetches the actual video/playlist title via yt-dlp.
+    Falls back to sanitized URL if title fetch fails.
     """
-    # Udemy
+    # Udemy — slug is already meaningful
     m = re.search(r"udemy\.com/course/([^/?#]+)", course_url)
     if m:
         return m.group(1).strip("/")
 
-    # YouTube playlist
-    m = re.search(r"[?&]list=([^&]+)", course_url)
-    if m and "youtube.com" in course_url:
-        return f"playlist-{m.group(1)}"
-
-    # YouTube video
-    m = re.search(r"[?&]v=([^&]+)", course_url)
-    if m and "youtube.com" in course_url:
-        return f"video-{m.group(1)}"
-
-    # YouTube short URL (youtu.be/ID)
-    m = re.search(r"youtu\.be/([^/?#]+)", course_url)
-    if m:
-        return f"video-{m.group(1)}"
-
-    # YouTube channel handle (@name)
-    m = re.search(r"youtube\.com/@([^/?#]+)", course_url)
-    if m:
-        return m.group(1)
+    # YouTube — fetch real title
+    if "youtube.com" in course_url or "youtu.be" in course_url:
+        title = fetch_title(course_url)
+        if title:
+            return slugify(title)
 
     # Fallback: sanitize URL into a safe string
     return re.sub(r"[^\w\-]", "_", course_url)[-50:]

@@ -27,7 +27,7 @@ PROVIDER_DEFAULT_MODELS = {
 
 # --- Download settings ---
 OUTPUT_DIR     = os.getenv("OUTPUT_DIR", "./output")
-COOKIE_BROWSER = os.getenv("COOKIE_BROWSER", "chrome")
+COOKIE_BROWSER = os.getenv("COOKIE_BROWSER", "firefox")
 
 UDEMY_USERNAME = os.getenv("UDEMY_USERNAME")
 UDEMY_PASSWORD = os.getenv("UDEMY_PASSWORD")
