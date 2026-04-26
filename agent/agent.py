@@ -19,13 +19,13 @@ tools = [
         "function_declarations": [
             {
                 "name": "get_course_info",
-                "description": "Fetch course metadata and list of lectures from a Udemy course URL.",
+                "description": "Fetch course metadata and list of lectures from a Udemy or YouTube URL.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "course_url": {
                             "type": "string",
-                            "description": "The full Udemy course URL"
+                            "description": "The full course or playlist URL (Udemy or YouTube)"
                         }
                     },
                     "required": ["course_url"]
@@ -33,13 +33,13 @@ tools = [
             },
             {
                 "name": "download_all_transcripts",
-                "description": "Download transcripts for all lectures in a Udemy course. The course folder name is auto-derived from the URL — no need to provide course_name.",
+                "description": "Download transcripts for all videos in a Udemy course or YouTube playlist. The output folder name is auto-derived from the URL — no need to provide course_name.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "course_url": {
                             "type": "string",
-                            "description": "The full Udemy course URL"
+                            "description": "The full course or playlist URL (Udemy or YouTube)"
                         },
                         "course_name": {
                             "type": "string",
@@ -51,20 +51,20 @@ tools = [
             },
             {
                 "name": "download_transcript",
-                "description": "Download transcript for a single Udemy lecture.",
+                "description": "Download transcript for a single Udemy lecture or YouTube video.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "lecture_url": {
                             "type": "string",
-                            "description": "The URL of the individual lecture"
+                            "description": "The URL of the individual lecture or YouTube video"
                         },
-                        "output_path": {
+                        "course_name": {
                             "type": "string",
-                            "description": "Local folder path to save the transcript"
+                            "description": "Optional. Override the auto-derived folder name."
                         }
                     },
-                    "required": ["lecture_url", "output_path"]
+                    "required": ["lecture_url"]
                 }
             },
             {
@@ -94,15 +94,17 @@ TOOL_MAP = {
 
 
 def run_agent(user_prompt: str):
-    """Run the Udemy transcript agent with a user prompt."""
+    """Run the coursenotes-ai transcript agent with a user prompt."""
     model = genai.GenerativeModel(
         model_name=GEMINI_MODEL,
         tools=tools,
         system_instruction=(
-            "You are a helpful Udemy transcript downloader agent. "
-            "When given a Udemy course URL, use the available tools to fetch course info "
-            "and download transcripts for all lectures. "
-            "Always confirm what was downloaded and where the files were saved."
+            "You are coursenotes-ai, a transcript downloader agent. "
+            "You support Udemy courses and YouTube videos or playlists. "
+            "When given a URL, detect the platform (Udemy or YouTube), "
+            "use the available tools to fetch course info and download transcripts for all lectures. "
+            "Raw .vtt files and clean .txt files are saved in separate folders automatically. "
+            "Always confirm what was downloaded, the platform detected, and where the files were saved."
         )
     )
 

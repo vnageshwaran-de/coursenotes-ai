@@ -8,13 +8,40 @@ from tools.vtt_to_text import convert_vtt_to_txt, convert_all_vtt_in_folder
 
 def extract_course_name(course_url: str) -> str:
     """
-    Auto-derive a folder-safe course name from a Udemy URL.
-    e.g. https://www.udemy.com/course/python-bootcamp/ -> python-bootcamp
-    Falls back to a sanitized version of the full URL if pattern not matched.
+    Auto-derive a folder-safe course name from a supported URL.
+
+    Supported patterns:
+      Udemy:    https://www.udemy.com/course/python-bootcamp/     -> python-bootcamp
+      YouTube playlist: https://youtube.com/playlist?list=PLxxx  -> playlist-PLxxx
+      YouTube video:    https://youtube.com/watch?v=abc123        -> video-abc123
+      YouTube channel:  https://youtube.com/@channelname          -> channelname
+      Fallback: sanitized URL slug
     """
-    match = re.search(r"udemy\.com/course/([^/?#]+)", course_url)
-    if match:
-        return match.group(1).strip("/")
+    # Udemy
+    m = re.search(r"udemy\.com/course/([^/?#]+)", course_url)
+    if m:
+        return m.group(1).strip("/")
+
+    # YouTube playlist
+    m = re.search(r"[?&]list=([^&]+)", course_url)
+    if m and "youtube.com" in course_url:
+        return f"playlist-{m.group(1)}"
+
+    # YouTube video
+    m = re.search(r"[?&]v=([^&]+)", course_url)
+    if m and "youtube.com" in course_url:
+        return f"video-{m.group(1)}"
+
+    # YouTube short URL (youtu.be/ID)
+    m = re.search(r"youtu\.be/([^/?#]+)", course_url)
+    if m:
+        return f"video-{m.group(1)}"
+
+    # YouTube channel handle (@name)
+    m = re.search(r"youtube\.com/@([^/?#]+)", course_url)
+    if m:
+        return m.group(1)
+
     # Fallback: sanitize URL into a safe string
     return re.sub(r"[^\w\-]", "_", course_url)[-50:]
 
