@@ -1,6 +1,6 @@
 install:
-	pip install -r requirements.txt
-	playwright install firefox
+	pip3 install -r requirements.txt
+	python3 -m playwright install firefox
 
 setup:
 	python3 setup_session.py
