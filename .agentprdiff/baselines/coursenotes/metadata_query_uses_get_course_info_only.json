@@ -2,7 +2,7 @@
   "case_name": "metadata_query_uses_get_course_info_only",
   "suite_name": "coursenotes",
   "input": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only",
-  "output": "The playlist has 3 videos.",
+  "output": "The playlist has 3 videos. \n\n1. 01 - Introduction\n2. 02 - Getting Started\n3. 03 - Advanced Topics",
   "llm_calls": [
     {
       "provider": "groq",
@@ -10,142 +10,184 @@
       "input_messages": [
         {
           "role": "system",
-          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists.\n\nRequired behavior \u2014 follow these rules in order:\n\n1. URL presence. If the user has NOT provided a YouTube URL, ask them for one. Do NOT call any tool until they provide one. Do not guess, infer, or fabricate a URL.\n\n2. Metadata-only requests. If the user only asks about a playlist's metadata (e.g. 'how many videos', 'what's in this playlist', 'list the lectures', 'is this a long course'), use ONLY get_course_info. Do NOT call download_transcript or download_all_transcripts for metadata-only questions \u2014 downloading without explicit consent is wrong.\n\n3. Explicit download requests. If the user explicitly asks to download or save transcripts and has provided a URL, call the appropriate download tool: download_all_transcripts for playlists, download_transcript for single videos.\n\n4. Already-downloaded queries. If the user asks what has already been downloaded for a course, use list_downloaded_transcripts. Do NOT re-download.\n\n5. Save-location confirmation. After any successful download, always confirm what was downloaded and the folder paths (./output/<course_name>/vtt/ for raw subtitles, ./output/<course_name>/txt/ for clean text).\n\nRaw .vtt files and clean .txt files are saved in separate folders automatically."
         },
         {
           "role": "user",
           "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
         }
       ],
-      "output_text": "",
-      "tool_calls": [
-        {
-          "id": "q9e16gy22",
-          "name": "get_course_info",
-          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}"
-        }
-      ],
-      "prompt_tokens": 638,
-      "completion_tokens": 29,
-      "cost_usd": 0.00039933000000000004,
-      "latency_ms": 398.3654170006048,
-      "timestamp": ""
-    },
-    {
-      "provider": "groq",
-      "model": "llama-3.3-70b-versatile",
-      "input_messages": [
-        {
-          "role": "system",
-          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
-        },
-        {
-          "role": "user",
-          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
-        },
-        {
-          "content": null,
-          "refusal": null,
-          "role": "assistant",
-          "annotations": null,
-          "audio": null,
-          "function_call": null,
-          "tool_calls": [
-            {
-              "id": "q9e16gy22",
-              "function": {
-                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
-                "name": "get_course_info"
-              },
-              "type": "function"
-            }
-          ]
-        },
-        {
-          "role": "tool",
-          "tool_call_id": "q9e16gy22",
-          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
-        }
-      ],
-      "output_text": "",
-      "tool_calls": [
-        {
-          "id": "r32axzmwz",
-          "name": "get_course_info",
-          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}"
-        }
-      ],
-      "prompt_tokens": 752,
-      "completion_tokens": 28,
-      "cost_usd": 0.0004658,
-      "latency_ms": 293.30900000059046,
-      "timestamp": ""
-    },
-    {
-      "provider": "groq",
-      "model": "llama-3.3-70b-versatile",
-      "input_messages": [
-        {
-          "role": "system",
-          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
-        },
-        {
-          "role": "user",
-          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
-        },
-        {
-          "content": null,
-          "refusal": null,
-          "role": "assistant",
-          "annotations": null,
-          "audio": null,
-          "function_call": null,
-          "tool_calls": [
-            {
-              "id": "q9e16gy22",
-              "function": {
-                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
-                "name": "get_course_info"
-              },
-              "type": "function"
-            }
-          ]
-        },
-        {
-          "role": "tool",
-          "tool_call_id": "q9e16gy22",
-          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
-        },
-        {
-          "content": null,
-          "refusal": null,
-          "role": "assistant",
-          "annotations": null,
-          "audio": null,
-          "function_call": null,
-          "tool_calls": [
-            {
-              "id": "r32axzmwz",
-              "function": {
-                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
-                "name": "get_course_info"
-              },
-              "type": "function"
-            }
-          ]
-        },
-        {
-          "role": "tool",
-          "tool_call_id": "r32axzmwz",
-          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
-        }
-      ],
-      "output_text": "The playlist has 3 videos.",
+      "output_text": "<exception: BadRequestError: Error code: 400 - {'error': {'message': \"Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=get_course_info{\"course_url\": \"https://www.youtube.com/playlist?list=PLstub-info-only\"}</function>'}}>",
       "tool_calls": [],
-      "prompt_tokens": 866,
-      "completion_tokens": 8,
-      "cost_usd": 0.0005172600000000001,
-      "latency_ms": 976.8178329977673,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "cost_usd": 0.0,
+      "latency_ms": 385.92833299480844,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists.\n\nRequired behavior \u2014 follow these rules in order:\n\n1. URL presence. If the user has NOT provided a YouTube URL, ask them for one. Do NOT call any tool until they provide one. Do not guess, infer, or fabricate a URL.\n\n2. Metadata-only requests. If the user only asks about a playlist's metadata (e.g. 'how many videos', 'what's in this playlist', 'list the lectures', 'is this a long course'), use ONLY get_course_info. Do NOT call download_transcript or download_all_transcripts for metadata-only questions \u2014 downloading without explicit consent is wrong.\n\n3. Explicit download requests. If the user explicitly asks to download or save transcripts and has provided a URL, call the appropriate download tool: download_all_transcripts for playlists, download_transcript for single videos.\n\n4. Already-downloaded queries. If the user asks what has already been downloaded for a course, use list_downloaded_transcripts. Do NOT re-download.\n\n5. Save-location confirmation. After any successful download, always confirm what was downloaded and the folder paths (./output/<course_name>/vtt/ for raw subtitles, ./output/<course_name>/txt/ for clean text).\n\nRaw .vtt files and clean .txt files are saved in separate folders automatically."
+        },
+        {
+          "role": "user",
+          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
+        }
+      ],
+      "output_text": "<exception: BadRequestError: Error code: 400 - {'error': {'message': \"Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'tool_use_failed', 'failed_generation': '<function=get_course_info {\"course_url\": \"https://www.youtube.com/playlist?list=PLstub-info-only\"} </function>'}}>",
+      "tool_calls": [],
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "cost_usd": 0.0,
+      "latency_ms": 533.7017499987269,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists.\n\nRequired behavior \u2014 follow these rules in order:\n\n1. URL presence. If the user has NOT provided a YouTube URL, ask them for one. Do NOT call any tool until they provide one. Do not guess, infer, or fabricate a URL.\n\n2. Metadata-only requests. If the user only asks about a playlist's metadata (e.g. 'how many videos', 'what's in this playlist', 'list the lectures', 'is this a long course'), use ONLY get_course_info. Do NOT call download_transcript or download_all_transcripts for metadata-only questions \u2014 downloading without explicit consent is wrong.\n\n3. Explicit download requests. If the user explicitly asks to download or save transcripts and has provided a URL, call the appropriate download tool: download_all_transcripts for playlists, download_transcript for single videos.\n\n4. Already-downloaded queries. If the user asks what has already been downloaded for a course, use list_downloaded_transcripts. Do NOT re-download.\n\n5. Save-location confirmation. After any successful download, always confirm what was downloaded and the folder paths (./output/<course_name>/vtt/ for raw subtitles, ./output/<course_name>/txt/ for clean text).\n\nRaw .vtt files and clean .txt files are saved in separate folders automatically."
+        },
+        {
+          "role": "user",
+          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "9rn98sdcf",
+          "name": "get_course_info",
+          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}"
+        }
+      ],
+      "prompt_tokens": 852,
+      "completion_tokens": 29,
+      "cost_usd": 0.00052559,
+      "latency_ms": 929.5689159989706,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists.\n\nRequired behavior \u2014 follow these rules in order:\n\n1. URL presence. If the user has NOT provided a YouTube URL, ask them for one. Do NOT call any tool until they provide one. Do not guess, infer, or fabricate a URL.\n\n2. Metadata-only requests. If the user only asks about a playlist's metadata (e.g. 'how many videos', 'what's in this playlist', 'list the lectures', 'is this a long course'), use ONLY get_course_info. Do NOT call download_transcript or download_all_transcripts for metadata-only questions \u2014 downloading without explicit consent is wrong.\n\n3. Explicit download requests. If the user explicitly asks to download or save transcripts and has provided a URL, call the appropriate download tool: download_all_transcripts for playlists, download_transcript for single videos.\n\n4. Already-downloaded queries. If the user asks what has already been downloaded for a course, use list_downloaded_transcripts. Do NOT re-download.\n\n5. Save-location confirmation. After any successful download, always confirm what was downloaded and the folder paths (./output/<course_name>/vtt/ for raw subtitles, ./output/<course_name>/txt/ for clean text).\n\nRaw .vtt files and clean .txt files are saved in separate folders automatically."
+        },
+        {
+          "role": "user",
+          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "9rn98sdcf",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
+                "name": "get_course_info"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "9rn98sdcf",
+          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "yrpggyr14",
+          "name": "get_course_info",
+          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}"
+        }
+      ],
+      "prompt_tokens": 966,
+      "completion_tokens": 28,
+      "cost_usd": 0.00059206,
+      "latency_ms": 612.3681669996586,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists.\n\nRequired behavior \u2014 follow these rules in order:\n\n1. URL presence. If the user has NOT provided a YouTube URL, ask them for one. Do NOT call any tool until they provide one. Do not guess, infer, or fabricate a URL.\n\n2. Metadata-only requests. If the user only asks about a playlist's metadata (e.g. 'how many videos', 'what's in this playlist', 'list the lectures', 'is this a long course'), use ONLY get_course_info. Do NOT call download_transcript or download_all_transcripts for metadata-only questions \u2014 downloading without explicit consent is wrong.\n\n3. Explicit download requests. If the user explicitly asks to download or save transcripts and has provided a URL, call the appropriate download tool: download_all_transcripts for playlists, download_transcript for single videos.\n\n4. Already-downloaded queries. If the user asks what has already been downloaded for a course, use list_downloaded_transcripts. Do NOT re-download.\n\n5. Save-location confirmation. After any successful download, always confirm what was downloaded and the folder paths (./output/<course_name>/vtt/ for raw subtitles, ./output/<course_name>/txt/ for clean text).\n\nRaw .vtt files and clean .txt files are saved in separate folders automatically."
+        },
+        {
+          "role": "user",
+          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "9rn98sdcf",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
+                "name": "get_course_info"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "9rn98sdcf",
+          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "yrpggyr14",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
+                "name": "get_course_info"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "yrpggyr14",
+          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
+        }
+      ],
+      "output_text": "The playlist has 3 videos. \n\n1. 01 - Introduction\n2. 02 - Getting Started\n3. 03 - Advanced Topics",
+      "tool_calls": [],
+      "prompt_tokens": 1080,
+      "completion_tokens": 31,
+      "cost_usd": 0.00066169,
+      "latency_ms": 302.1604160021525,
       "timestamp": ""
     }
   ],
@@ -174,7 +216,7 @@
           }
         ]
       },
-      "latency_ms": 0.020207997295074165,
+      "latency_ms": 0.023709006200078875,
       "error": null
     },
     {
@@ -201,20 +243,20 @@
           }
         ]
       },
-      "latency_ms": 0.007000002369750291,
+      "latency_ms": 0.004207999154459685,
       "error": null
     }
   ],
-  "total_cost_usd": 0.00138239,
-  "total_latency_ms": 1668.5194579986273,
-  "total_prompt_tokens": 2256,
-  "total_completion_tokens": 65,
+  "total_cost_usd": 0.00177934,
+  "total_latency_ms": 2763.7554989996715,
+  "total_prompt_tokens": 2898,
+  "total_completion_tokens": 88,
   "error": null,
   "metadata": {
     "provider": "groq",
     "model": "llama-3.3-70b-versatile",
     "max_iterations": 8
   },
-  "run_id": "268a3476af74",
-  "created_at": "2026-04-26T16:41:04+00:00"
+  "run_id": "95295a589e6e",
+  "created_at": "2026-04-26T18:17:47+00:00"
 }
