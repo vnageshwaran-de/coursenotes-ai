@@ -3,7 +3,7 @@ import json
 import os
 import re
 from config import OUTPUT_DIR, COOKIE_BROWSER
-from tools.vtt_to_text import convert_vtt_to_txt, convert_all_vtt_in_folder
+from tools.vtt_to_text import convert_all_vtt_in_folder
 
 
 def slugify(text: str, max_length: int = 60) -> str:

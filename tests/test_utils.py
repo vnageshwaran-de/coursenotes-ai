@@ -1,6 +1,7 @@
 from tools.ytdlp_tools import slugify, extract_course_name
 from tools.vtt_to_text import vtt_to_clean_text
-import tempfile, os
+import os
+import tempfile
 
 
 def test_slugify_basic():
