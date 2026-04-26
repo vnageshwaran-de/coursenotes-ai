@@ -1,7 +1,22 @@
 import subprocess
 import json
 import os
+import re
 from config import OUTPUT_DIR, COOKIE_BROWSER, UDEMY_USERNAME, UDEMY_PASSWORD
+from tools.vtt_to_text import convert_vtt_to_txt, convert_all_vtt_in_folder
+
+
+def extract_course_name(course_url: str) -> str:
+    """
+    Auto-derive a folder-safe course name from a Udemy URL.
+    e.g. https://www.udemy.com/course/python-bootcamp/ -> python-bootcamp
+    Falls back to a sanitized version of the full URL if pattern not matched.
+    """
+    match = re.search(r"udemy\.com/course/([^/?#]+)", course_url)
+    if match:
+        return match.group(1).strip("/")
+    # Fallback: sanitize URL into a safe string
+    return re.sub(r"[^\w\-]", "_", course_url)[-50:]
 
 
 def get_course_info(course_url: str) -> dict:
@@ -19,9 +34,18 @@ def get_course_info(course_url: str) -> dict:
     return json.loads(result.stdout)
 
 
-def download_transcript(lecture_url: str, output_path: str) -> dict:
-    """Download subtitles/transcript for a single lecture."""
-    os.makedirs(output_path, exist_ok=True)
+def download_transcript(lecture_url: str, course_name: str = None) -> dict:
+    """
+    Download subtitle for a single lecture.
+    Saves .vtt to output/<course_name>/vtt/
+    Converts and saves .txt to output/<course_name>/txt/
+    course_name is auto-derived from the URL if not provided.
+    """
+    course_name = course_name or extract_course_name(lecture_url)
+    vtt_folder = os.path.join(OUTPUT_DIR, course_name, "vtt")
+    txt_folder = os.path.join(OUTPUT_DIR, course_name, "txt")
+    os.makedirs(vtt_folder, exist_ok=True)
+
     cmd = [
         "yt-dlp",
         "--cookies-from-browser", COOKIE_BROWSER,
@@ -30,21 +54,41 @@ def download_transcript(lecture_url: str, output_path: str) -> dict:
         "--sub-lang", "en",
         "--sub-format", "vtt",
         "--skip-download",
-        "--output", f"{output_path}/%(title)s.%(ext)s",
+        "--output", f"{vtt_folder}/%(title)s.%(ext)s",
         lecture_url
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
+
+    txt_files = []
+    if result.returncode == 0:
+        for filename in sorted(os.listdir(vtt_folder)):
+            if filename.endswith(".vtt"):
+                vtt_path = os.path.join(vtt_folder, filename)
+                txt_path = convert_vtt_to_txt(vtt_path, txt_folder)
+                txt_files.append(txt_path)
+
     return {
         "success": result.returncode == 0,
+        "vtt_folder": vtt_folder,
+        "txt_folder": txt_folder,
+        "txt_files": txt_files,
         "stdout": result.stdout,
         "stderr": result.stderr
     }
 
 
-def download_all_transcripts(course_url: str, course_name: str) -> dict:
-    """Download transcripts for all lectures in a course."""
-    output_path = os.path.join(OUTPUT_DIR, course_name)
-    os.makedirs(output_path, exist_ok=True)
+def download_all_transcripts(course_url: str, course_name: str = None) -> dict:
+    """
+    Download transcripts for all lectures in a course.
+    Saves .vtt files to output/<course_name>/vtt/
+    Converts and saves clean .txt files to output/<course_name>/txt/
+    course_name is auto-derived from the URL if not provided.
+    """
+    course_name = course_name or extract_course_name(course_url)
+    vtt_folder = os.path.join(OUTPUT_DIR, course_name, "vtt")
+    txt_folder = os.path.join(OUTPUT_DIR, course_name, "txt")
+    os.makedirs(vtt_folder, exist_ok=True)
+
     cmd = [
         "yt-dlp",
         "--cookies-from-browser", COOKIE_BROWSER,
@@ -53,21 +97,29 @@ def download_all_transcripts(course_url: str, course_name: str) -> dict:
         "--sub-lang", "en",
         "--sub-format", "vtt",
         "--skip-download",
-        "--output", f"{output_path}/%(playlist_index)s - %(title)s.%(ext)s",
+        "--output", f"{vtt_folder}/%(playlist_index)s - %(title)s.%(ext)s",
         course_url
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
+
+    txt_files = []
+    if result.returncode == 0:
+        txt_files = convert_all_vtt_in_folder(vtt_folder, txt_folder)
+
     return {
         "success": result.returncode == 0,
-        "output_path": output_path,
+        "vtt_folder": vtt_folder,
+        "txt_folder": txt_folder,
+        "txt_files_created": len(txt_files),
+        "txt_files": txt_files,
         "stdout": result.stdout,
         "stderr": result.stderr
     }
 
 
 def list_downloaded_transcripts(course_name: str) -> list:
-    """List all transcript files downloaded for a course."""
-    path = os.path.join(OUTPUT_DIR, course_name)
-    if not os.path.exists(path):
+    """List all clean .txt transcript files for a course."""
+    txt_folder = os.path.join(OUTPUT_DIR, course_name, "txt")
+    if not os.path.exists(txt_folder):
         return []
-    return [f for f in os.listdir(path) if f.endswith(".vtt") or f.endswith(".srt")]
+    return sorted([f for f in os.listdir(txt_folder) if f.endswith(".txt")])

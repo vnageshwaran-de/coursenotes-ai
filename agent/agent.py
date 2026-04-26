@@ -33,7 +33,7 @@ tools = [
             },
             {
                 "name": "download_all_transcripts",
-                "description": "Download transcripts for all lectures in a Udemy course.",
+                "description": "Download transcripts for all lectures in a Udemy course. The course folder name is auto-derived from the URL — no need to provide course_name.",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -43,10 +43,10 @@ tools = [
                         },
                         "course_name": {
                             "type": "string",
-                            "description": "A short name/slug to use as the output folder name"
+                            "description": "Optional. Override the auto-derived folder name."
                         }
                     },
-                    "required": ["course_url", "course_name"]
+                    "required": ["course_url"]
                 }
             },
             {
