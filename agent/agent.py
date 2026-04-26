@@ -129,6 +129,7 @@ def run_agent(user_prompt: str):
             messages=messages,
             tools=TOOLS,
             tool_choice="auto",
+            parallel_tool_calls=False,
         )
 
         msg = response.choices[0].message
