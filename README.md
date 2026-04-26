@@ -1,6 +1,6 @@
 # coursenotes-ai
 
-Automatically download and organize course transcripts from Udemy and YouTube using yt-dlp, orchestrated by a Gemini 2.0 Flash AI agent.
+Automatically download and organize course transcripts from Udemy and YouTube using yt-dlp, orchestrated by an AI agent powered by Groq, Gemini, Ollama, or OpenRouter.
 
 > **v1.2 — Udemy + YouTube supported. Multi-provider LLM support (Groq default).** More platforms planned for future releases.
 
