@@ -2,6 +2,15 @@ import re
 import os
 
 
+def slugify(text: str, max_length: int = 60) -> str:
+    """Convert a title into a clean file-safe slug."""
+    text = text.strip()
+    text = re.sub(r"[^\w\s\-]", "", text)
+    text = re.sub(r"[\s_]+", "-", text)
+    text = re.sub(r"-+", "-", text)
+    return text[:max_length].strip("-")
+
+
 def vtt_to_clean_text(vtt_path: str) -> str:
     """
     Convert a .vtt subtitle file to clean, readable plain text.
@@ -52,8 +61,9 @@ def convert_vtt_to_txt(vtt_path: str, txt_folder: str) -> str:
     Returns the path of the saved .txt file.
     """
     os.makedirs(txt_folder, exist_ok=True)
-    # Strip language suffix e.g. "My Video.en.vtt" -> "My Video.txt"
-    base_name = re.sub(r"\.[a-z]{2,5}$", "", os.path.splitext(os.path.basename(vtt_path))[0]) + ".txt"
+    # Strip language suffix e.g. "My Video.en.vtt" -> "My Video"
+    raw_name = re.sub(r"\.[a-z]{2,5}$", "", os.path.splitext(os.path.basename(vtt_path))[0])
+    base_name = slugify(raw_name) + ".txt"
     txt_path = os.path.join(txt_folder, base_name)
     clean_text = vtt_to_clean_text(vtt_path)
     with open(txt_path, "w", encoding="utf-8") as f:
