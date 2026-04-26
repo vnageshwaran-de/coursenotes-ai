@@ -42,16 +42,19 @@ output/
 git clone https://github.com/vnageshwaran-de/coursenotes-ai.git
 cd coursenotes-ai
 
-# 2. Create virtual environment
+# 2. Create and activate virtual environment
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
-# 3. Install dependencies
-pip install -r requirements.txt
+# 3. Install all dependencies (including Playwright + Firefox browser)
+make install
 
 # 4. Configure environment
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY
+# Edit .env and add your LLM_API_KEY
+
+# 5. First-time Udemy login (saves session — run once)
+make setup
 ```
 
 ## Usage
