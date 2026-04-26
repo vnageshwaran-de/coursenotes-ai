@@ -1,12 +1,12 @@
 # coursenotes-ai
 
-Automatically download and organize course transcripts from Udemy and YouTube using yt-dlp, orchestrated by an AI agent powered by Groq, Gemini, Ollama, or OpenRouter.
+Automatically download and organize YouTube video and playlist transcripts using yt-dlp, orchestrated by an AI agent powered by Groq, Gemini, Ollama, or OpenRouter.
 
-> **v1.2 — Udemy + YouTube supported. Multi-provider LLM support (Groq default).** More platforms planned for future releases.
+> **v1.2 — YouTube supported. Multi-provider LLM support (Groq default).** More platforms planned for future releases.
 
 ## Features
 
-- Download transcripts from **Udemy courses** and **YouTube videos or playlists**
+- Download transcripts from **YouTube videos and playlists**
 - Course folder auto-named from the URL — no manual input needed
 - Raw `.vtt` files and clean readable `.txt` files saved in separate folders
 - Uses browser cookies for auth — no passwords stored in code
@@ -127,11 +127,11 @@ LLM_MODEL=          # leave blank for provider default
 
 ## Roadmap
 
-- [x] Udemy transcript download
 - [x] YouTube video and playlist transcript download
 - [x] Clean `.txt` output with separate `vtt/` and `txt/` folders
 - [x] Auto course folder naming from URL
 - [x] Multi-provider LLM support (Groq, Gemini, Ollama, OpenRouter)
+- [ ] Udemy support (in progress)
 - [ ] Coursera and LinkedIn Learning support
 - [ ] Whisper fallback for courses without captions
 - [ ] Markdown export for study notes

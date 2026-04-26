@@ -2,18 +2,13 @@ import subprocess
 import json
 import os
 import re
-from config import OUTPUT_DIR, COOKIE_BROWSER, UDEMY_USERNAME, UDEMY_PASSWORD
+from config import OUTPUT_DIR, COOKIE_BROWSER
 from tools.vtt_to_text import convert_vtt_to_txt, convert_all_vtt_in_folder
-
-
-def is_udemy_url(url: str) -> bool:
-    return "udemy.com" in url
 
 
 def slugify(text: str, max_length: int = 60) -> str:
     """Convert a title into a clean folder-safe slug."""
     text = text.strip()
-    # Replace special characters and spaces with hyphens
     text = re.sub(r"[^\w\s\-]", "", text)
     text = re.sub(r"[\s_]+", "-", text)
     text = re.sub(r"-+", "-", text)
@@ -36,46 +31,23 @@ def fetch_title(url: str) -> str | None:
     return None
 
 
-def clean_udemy_url(url: str) -> str:
+def extract_course_name(url: str) -> str:
     """
-    Strip lecture-specific parts from a Udemy URL.
-    e.g. https://www.udemy.com/course/nvidia-nca-genl/learn/lecture/54150585#overview
-      -> https://www.udemy.com/course/nvidia-nca-genl/
-    """
-    m = re.search(r"(https://www\.udemy\.com/course/[^/?#]+/)", url)
-    if m:
-        return m.group(1)
-    return url
-
-
-def extract_course_name(course_url: str) -> str:
-    """
-    Derive a meaningful folder name from the URL.
-    For Udemy: uses the course slug from the URL.
-    For YouTube: fetches the actual video/playlist title via yt-dlp.
+    Derive a meaningful folder name from a YouTube URL.
+    Fetches the actual video/playlist title via yt-dlp.
     Falls back to sanitized URL if title fetch fails.
     """
-    # Udemy — slug is already meaningful
-    m = re.search(r"udemy\.com/course/([^/?#]+)", course_url)
-    if m:
-        return m.group(1).strip("/")
-
-    # YouTube — fetch real title
-    if "youtube.com" in course_url or "youtu.be" in course_url:
-        title = fetch_title(course_url)
+    if "youtube.com" in url or "youtu.be" in url:
+        title = fetch_title(url)
         if title:
             return slugify(title)
 
     # Fallback: sanitize URL into a safe string
-    return re.sub(r"[^\w\-]", "_", course_url)[-50:]
+    return re.sub(r"[^\w\-]", "_", url)[-50:]
 
 
 def get_course_info(course_url: str) -> dict:
-    """Fetch course metadata and lecture list."""
-    if is_udemy_url(course_url):
-        from tools.udemy_playwright import get_udemy_course_info
-        return get_udemy_course_info(clean_udemy_url(course_url))
-
+    """Fetch video/playlist metadata and lecture list using yt-dlp."""
     cmd = [
         "yt-dlp",
         "--cookies-from-browser", COOKIE_BROWSER,
@@ -91,17 +63,12 @@ def get_course_info(course_url: str) -> dict:
 
 def download_transcript(lecture_url: str, course_name: str = None) -> dict:
     """
-    Download subtitle for a single lecture.
+    Download subtitle for a single YouTube video.
     Saves .vtt to output/<course_name>/vtt/
     Converts and saves .txt to output/<course_name>/txt/
-    course_name is auto-derived from the URL if not provided.
+    course_name is auto-derived from the video title if not provided.
     """
-    lecture_url = clean_udemy_url(lecture_url)
     course_name = course_name or extract_course_name(lecture_url)
-
-    if is_udemy_url(lecture_url):
-        from tools.udemy_playwright import download_udemy_transcripts
-        return download_udemy_transcripts(lecture_url, course_name)
     vtt_folder = os.path.join(OUTPUT_DIR, course_name, "vtt")
     txt_folder = os.path.join(OUTPUT_DIR, course_name, "txt")
     os.makedirs(vtt_folder, exist_ok=True)
@@ -139,17 +106,12 @@ def download_transcript(lecture_url: str, course_name: str = None) -> dict:
 
 def download_all_transcripts(course_url: str, course_name: str = None) -> dict:
     """
-    Download transcripts for all lectures in a course.
+    Download transcripts for all videos in a YouTube playlist.
     Saves .vtt files to output/<course_name>/vtt/
     Converts and saves clean .txt files to output/<course_name>/txt/
-    course_name is auto-derived from the URL if not provided.
+    course_name is auto-derived from the playlist title if not provided.
     """
-    course_url = clean_udemy_url(course_url)
     course_name = course_name or extract_course_name(course_url)
-
-    if is_udemy_url(course_url):
-        from tools.udemy_playwright import download_udemy_transcripts
-        return download_udemy_transcripts(course_url, course_name)
     vtt_folder = os.path.join(OUTPUT_DIR, course_name, "vtt")
     txt_folder = os.path.join(OUTPUT_DIR, course_name, "txt")
     os.makedirs(vtt_folder, exist_ok=True)
