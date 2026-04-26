@@ -7,7 +7,7 @@ load_dotenv()
 # Supported: groq | gemini | ollama | openrouter
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")
 LLM_API_KEY  = os.getenv("LLM_API_KEY", "")
-LLM_MODEL    = os.getenv("LLM_MODEL", "llama3-groq-70b-8192-tool-use-preview")
+LLM_MODEL    = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
 
 # Provider base URLs (OpenAI-compatible)
 PROVIDER_BASE_URLS = {
@@ -19,7 +19,7 @@ PROVIDER_BASE_URLS = {
 
 # Default models per provider (used if LLM_MODEL not set)
 PROVIDER_DEFAULT_MODELS = {
-    "groq":       "llama3-groq-70b-8192-tool-use-preview",
+    "groq":       "llama-3.3-70b-versatile",
     "gemini":     "gemini-2.0-flash",
     "ollama":     "llama3",
     "openrouter": "meta-llama/llama-3.3-70b-instruct:free",

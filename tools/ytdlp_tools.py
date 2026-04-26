@@ -16,18 +16,22 @@ def slugify(text: str, max_length: int = 60) -> str:
 
 
 def fetch_title(url: str) -> str | None:
-    """Fetch the video/playlist title from yt-dlp without downloading."""
-    cmd = [
-        "yt-dlp",
-        "--cookies-from-browser", COOKIE_BROWSER,
-        "--print", "%(title)s",
-        "--flat-playlist",
-        "--playlist-items", "1",
-        url
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode == 0 and result.stdout.strip():
-        return result.stdout.strip().splitlines()[0]
+    """
+    Fetch the video/playlist title from yt-dlp without downloading.
+    Tries without cookies first (works for public videos),
+    then retries with browser cookies if needed.
+    """
+    for cmd in [
+        # Try without cookies first (faster, works for public videos)
+        ["yt-dlp", "--print", "%(title)s", "--flat-playlist", "--playlist-items", "1", url],
+        # Retry with browser cookies
+        ["yt-dlp", "--cookies-from-browser", COOKIE_BROWSER, "--print", "%(title)s", "--flat-playlist", "--playlist-items", "1", url],
+    ]:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode == 0 and result.stdout.strip():
+            title = result.stdout.strip().splitlines()[0]
+            if title and title != "NA":
+                return title
     return None
 
 
@@ -35,14 +39,19 @@ def extract_course_name(url: str) -> str:
     """
     Derive a meaningful folder name from a YouTube URL.
     Fetches the actual video/playlist title via yt-dlp.
-    Falls back to sanitized URL if title fetch fails.
+    Falls back to YouTube video ID if title fetch fails.
     """
     if "youtube.com" in url or "youtu.be" in url:
+        # Try to get real title
         title = fetch_title(url)
         if title:
             return slugify(title)
 
-    # Fallback: sanitize URL into a safe string
+        # Fallback: use video ID which is at least readable
+        m = re.search(r"[?&]v=([^&]+)", url) or re.search(r"youtu\.be/([^/?#]+)", url)
+        if m:
+            return f"yt-{m.group(1)}"
+
     return re.sub(r"[^\w\-]", "_", url)[-50:]
 
 
@@ -86,18 +95,15 @@ def download_transcript(lecture_url: str, course_name: str = None) -> dict:
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
 
-    txt_files = []
-    if result.returncode == 0:
-        for filename in sorted(os.listdir(vtt_folder)):
-            if filename.endswith(".vtt"):
-                vtt_path = os.path.join(vtt_folder, filename)
-                txt_path = convert_vtt_to_txt(vtt_path, txt_folder)
-                txt_files.append(txt_path)
+    # Convert all VTTs in folder — catches both new and any previously missed
+    txt_files = convert_all_vtt_in_folder(vtt_folder, txt_folder)
 
     return {
         "success": result.returncode == 0,
+        "course_name": course_name,
         "vtt_folder": vtt_folder,
         "txt_folder": txt_folder,
+        "txt_files_created": len(txt_files),
         "txt_files": txt_files,
         "stdout": result.stdout,
         "stderr": result.stderr
