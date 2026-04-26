@@ -6,6 +6,10 @@ from config import OUTPUT_DIR, COOKIE_BROWSER, UDEMY_USERNAME, UDEMY_PASSWORD
 from tools.vtt_to_text import convert_vtt_to_txt, convert_all_vtt_in_folder
 
 
+def is_udemy_url(url: str) -> bool:
+    return "udemy.com" in url
+
+
 def slugify(text: str, max_length: int = 60) -> str:
     """Convert a title into a clean folder-safe slug."""
     text = text.strip()
@@ -32,6 +36,18 @@ def fetch_title(url: str) -> str | None:
     return None
 
 
+def clean_udemy_url(url: str) -> str:
+    """
+    Strip lecture-specific parts from a Udemy URL.
+    e.g. https://www.udemy.com/course/nvidia-nca-genl/learn/lecture/54150585#overview
+      -> https://www.udemy.com/course/nvidia-nca-genl/
+    """
+    m = re.search(r"(https://www\.udemy\.com/course/[^/?#]+/)", url)
+    if m:
+        return m.group(1)
+    return url
+
+
 def extract_course_name(course_url: str) -> str:
     """
     Derive a meaningful folder name from the URL.
@@ -55,7 +71,11 @@ def extract_course_name(course_url: str) -> str:
 
 
 def get_course_info(course_url: str) -> dict:
-    """Fetch course metadata and lecture list using yt-dlp."""
+    """Fetch course metadata and lecture list."""
+    if is_udemy_url(course_url):
+        from tools.udemy_playwright import get_udemy_course_info
+        return get_udemy_course_info(clean_udemy_url(course_url))
+
     cmd = [
         "yt-dlp",
         "--cookies-from-browser", COOKIE_BROWSER,
@@ -76,7 +96,12 @@ def download_transcript(lecture_url: str, course_name: str = None) -> dict:
     Converts and saves .txt to output/<course_name>/txt/
     course_name is auto-derived from the URL if not provided.
     """
+    lecture_url = clean_udemy_url(lecture_url)
     course_name = course_name or extract_course_name(lecture_url)
+
+    if is_udemy_url(lecture_url):
+        from tools.udemy_playwright import download_udemy_transcripts
+        return download_udemy_transcripts(lecture_url, course_name)
     vtt_folder = os.path.join(OUTPUT_DIR, course_name, "vtt")
     txt_folder = os.path.join(OUTPUT_DIR, course_name, "txt")
     os.makedirs(vtt_folder, exist_ok=True)
@@ -119,7 +144,12 @@ def download_all_transcripts(course_url: str, course_name: str = None) -> dict:
     Converts and saves clean .txt files to output/<course_name>/txt/
     course_name is auto-derived from the URL if not provided.
     """
+    course_url = clean_udemy_url(course_url)
     course_name = course_name or extract_course_name(course_url)
+
+    if is_udemy_url(course_url):
+        from tools.udemy_playwright import download_udemy_transcripts
+        return download_udemy_transcripts(course_url, course_name)
     vtt_folder = os.path.join(OUTPUT_DIR, course_name, "vtt")
     txt_folder = os.path.join(OUTPUT_DIR, course_name, "txt")
     os.makedirs(vtt_folder, exist_ok=True)

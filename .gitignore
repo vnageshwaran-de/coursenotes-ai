@@ -19,9 +19,10 @@ env/
 .env
 *.env
 
-# Cookies (sensitive — never commit)
+# Cookies and sessions (sensitive — never commit)
 cookies.txt
 *.cookies
+session.json
 
 # Output transcripts
 output/
