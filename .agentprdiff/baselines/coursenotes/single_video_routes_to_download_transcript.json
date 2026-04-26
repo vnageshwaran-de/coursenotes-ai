@@ -1,0 +1,113 @@
+{
+  "case_name": "single_video_routes_to_download_transcript",
+  "suite_name": "coursenotes",
+  "input": "Get the transcript for https://www.youtube.com/watch?v=abc12345",
+  "output": "The transcript for https://www.youtube.com/watch?v=abc12345 has been downloaded. The raw .vtt file and clean .txt file are saved in ./output/stubbed-video/vtt and ./output/stubbed-video/txt folders respectively. \n\nThe downloaded .txt file is named 'Stubbed Lecture Title.txt'.",
+  "llm_calls": [
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "Get the transcript for https://www.youtube.com/watch?v=abc12345"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "11s0qr82s",
+          "name": "download_transcript",
+          "arguments": "{\"lecture_url\":\"https://www.youtube.com/watch?v=abc12345\"}"
+        }
+      ],
+      "prompt_tokens": 631,
+      "completion_tokens": 27,
+      "cost_usd": 0.00039362,
+      "latency_ms": 387.588790996233,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "Get the transcript for https://www.youtube.com/watch?v=abc12345"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "11s0qr82s",
+              "function": {
+                "arguments": "{\"lecture_url\":\"https://www.youtube.com/watch?v=abc12345\"}",
+                "name": "download_transcript"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "11s0qr82s",
+          "content": "{\"success\": true, \"course_name\": \"stubbed-video\", \"vtt_folder\": \"./output/stubbed-video/vtt\", \"txt_folder\": \"./output/stubbed-video/txt\", \"txt_files_created\": 1, \"txt_files\": [\"Stubbed Lecture Title.txt\"], \"stdout\": \"[stub] downloaded 1/1\", \"stderr\": \"\"}"
+        }
+      ],
+      "output_text": "The transcript for https://www.youtube.com/watch?v=abc12345 has been downloaded. The raw .vtt file and clean .txt file are saved in ./output/stubbed-video/vtt and ./output/stubbed-video/txt folders respectively. \n\nThe downloaded .txt file is named 'Stubbed Lecture Title.txt'.",
+      "tool_calls": [],
+      "prompt_tokens": 744,
+      "completion_tokens": 68,
+      "cost_usd": 0.00049268,
+      "latency_ms": 507.94766600301955,
+      "timestamp": ""
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "download_transcript",
+      "arguments": {
+        "lecture_url": "https://www.youtube.com/watch?v=abc12345"
+      },
+      "result": {
+        "success": true,
+        "course_name": "stubbed-video",
+        "vtt_folder": "./output/stubbed-video/vtt",
+        "txt_folder": "./output/stubbed-video/txt",
+        "txt_files_created": 1,
+        "txt_files": [
+          "Stubbed Lecture Title.txt"
+        ],
+        "stdout": "[stub] downloaded 1/1",
+        "stderr": ""
+      },
+      "latency_ms": 0.008791001164354384,
+      "error": null
+    }
+  ],
+  "total_cost_usd": 0.0008863,
+  "total_latency_ms": 895.5452480004169,
+  "total_prompt_tokens": 1375,
+  "total_completion_tokens": 95,
+  "error": null,
+  "metadata": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "max_iterations": 8
+  },
+  "run_id": "0e5d85011591",
+  "created_at": "2026-04-26T16:41:03+00:00"
+}
