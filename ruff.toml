@@ -1,0 +1,5 @@
+[lint]
+ignore = ["E501"]   # ignore line too long
+
+[lint.per-file-ignores]
+"tests/*" = ["S101"]  # allow assert in tests

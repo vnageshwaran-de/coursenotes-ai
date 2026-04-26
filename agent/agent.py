@@ -6,8 +6,13 @@ from tools.ytdlp_tools import (
     download_all_transcripts,
     list_downloaded_transcripts,
 )
+from openai import BadRequestError
 from rich.console import Console
 import json
+import time
+
+# Fallback model if primary model fails tool calling
+GROQ_FALLBACK_MODEL = "mixtral-8x7b-32768"
 
 console = Console()
 
@@ -110,6 +115,36 @@ SYSTEM_PROMPT = (
 )
 
 
+def _call_llm(client, model: str, messages: list) -> object:
+    """Call the LLM with retry + fallback on tool_use_failed errors."""
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            return client.chat.completions.create(
+                model=model,
+                messages=messages,
+                tools=TOOLS,
+                tool_choice="auto",
+                parallel_tool_calls=False,
+            )
+        except BadRequestError as e:
+            if "tool_use_failed" in str(e) and LLM_PROVIDER == "groq":
+                if attempt < max_retries - 1:
+                    console.print(f"[dim]Tool call malformed, retrying ({attempt + 1}/{max_retries - 1})...[/dim]")
+                    time.sleep(1)
+                    continue
+                # All retries failed — switch to fallback model
+                console.print(f"[bold red]Switching to fallback model: {GROQ_FALLBACK_MODEL}[/bold red]")
+                return client.chat.completions.create(
+                    model=GROQ_FALLBACK_MODEL,
+                    messages=messages,
+                    tools=TOOLS,
+                    tool_choice="auto",
+                    parallel_tool_calls=False,
+                )
+            raise
+
+
 def run_agent(user_prompt: str):
     """Run the coursenotes-ai agent with a user prompt."""
     client = get_client()
@@ -124,14 +159,7 @@ def run_agent(user_prompt: str):
 
     # Agentic loop
     while True:
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            tools=TOOLS,
-            tool_choice="auto",
-            parallel_tool_calls=False,
-        )
-
+        response = _call_llm(client, model, messages)
         msg = response.choices[0].message
 
         # No tool call — final answer
