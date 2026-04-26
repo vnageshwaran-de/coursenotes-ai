@@ -1,0 +1,115 @@
+{
+  "case_name": "agent_states_save_location",
+  "suite_name": "coursenotes",
+  "input": "Download all transcripts from https://www.youtube.com/playlist?list=PLstub-savepath",
+  "output": "Transcripts for the YouTube playlist have been downloaded and saved to ./output/stubbed-playlist/vtt and ./output/stubbed-playlist/txt. The downloaded transcripts are:\n\n1 - Introduction.txt\n2 - Getting Started.txt\n3 - Advanced Topics.txt\n\nThese transcripts are available in both raw .vtt files and cleaned .txt files.",
+  "llm_calls": [
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "Download all transcripts from https://www.youtube.com/playlist?list=PLstub-savepath"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "mjxtwb05k",
+          "name": "download_all_transcripts",
+          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-savepath\"}"
+        }
+      ],
+      "prompt_tokens": 634,
+      "completion_tokens": 31,
+      "cost_usd": 0.00039855,
+      "latency_ms": 286.452874999668,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "Download all transcripts from https://www.youtube.com/playlist?list=PLstub-savepath"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "mjxtwb05k",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-savepath\"}",
+                "name": "download_all_transcripts"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "mjxtwb05k",
+          "content": "{\"success\": true, \"course_name\": \"stubbed-playlist\", \"vtt_folder\": \"./output/stubbed-playlist/vtt\", \"txt_folder\": \"./output/stubbed-playlist/txt\", \"txt_files_created\": 3, \"txt_files\": [\"1 - Introduction.txt\", \"2 - Getting Started.txt\", \"3 - Advanced Topics.txt\"], \"stdout\": \"[stub] downloaded 3/3\", \"stderr\": \"\"}"
+        }
+      ],
+      "output_text": "Transcripts for the YouTube playlist have been downloaded and saved to ./output/stubbed-playlist/vtt and ./output/stubbed-playlist/txt. The downloaded transcripts are:\n\n1 - Introduction.txt\n2 - Getting Started.txt\n3 - Advanced Topics.txt\n\nThese transcripts are available in both raw .vtt files and cleaned .txt files.",
+      "tool_calls": [],
+      "prompt_tokens": 767,
+      "completion_tokens": 72,
+      "cost_usd": 0.0005094100000000001,
+      "latency_ms": 711.827874998562,
+      "timestamp": ""
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "download_all_transcripts",
+      "arguments": {
+        "course_url": "https://www.youtube.com/playlist?list=PLstub-savepath"
+      },
+      "result": {
+        "success": true,
+        "course_name": "stubbed-playlist",
+        "vtt_folder": "./output/stubbed-playlist/vtt",
+        "txt_folder": "./output/stubbed-playlist/txt",
+        "txt_files_created": 3,
+        "txt_files": [
+          "1 - Introduction.txt",
+          "2 - Getting Started.txt",
+          "3 - Advanced Topics.txt"
+        ],
+        "stdout": "[stub] downloaded 3/3",
+        "stderr": ""
+      },
+      "latency_ms": 0.00866700429469347,
+      "error": null
+    }
+  ],
+  "total_cost_usd": 0.0009079600000000001,
+  "total_latency_ms": 998.2894170025247,
+  "total_prompt_tokens": 1401,
+  "total_completion_tokens": 103,
+  "error": null,
+  "metadata": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "max_iterations": 8
+  },
+  "run_id": "a201314915bc",
+  "created_at": "2026-04-26T16:41:09+00:00"
+}

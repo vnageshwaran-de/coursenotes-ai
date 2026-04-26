@@ -1,0 +1,106 @@
+{
+  "case_name": "list_query_doesnt_redownload",
+  "suite_name": "coursenotes",
+  "input": "What did I already download for course 'stubbed-playlist'?",
+  "output": "You have already downloaded the following transcripts for the course 'stubbed-playlist': \n1 - Introduction.txt\n2 - Getting Started.txt\n3 - Advanced Topics.txt",
+  "llm_calls": [
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "What did I already download for course 'stubbed-playlist'?"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "rb6k5stf6",
+          "name": "list_downloaded_transcripts",
+          "arguments": "{\"course_name\":\"stubbed-playlist\"}"
+        }
+      ],
+      "prompt_tokens": 629,
+      "completion_tokens": 21,
+      "cost_usd": 0.0003877,
+      "latency_ms": 331.17075000336627,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "What did I already download for course 'stubbed-playlist'?"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "rb6k5stf6",
+              "function": {
+                "arguments": "{\"course_name\":\"stubbed-playlist\"}",
+                "name": "list_downloaded_transcripts"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "rb6k5stf6",
+          "content": "[\"1 - Introduction.txt\", \"2 - Getting Started.txt\", \"3 - Advanced Topics.txt\"]"
+        }
+      ],
+      "output_text": "You have already downloaded the following transcripts for the course 'stubbed-playlist': \n1 - Introduction.txt\n2 - Getting Started.txt\n3 - Advanced Topics.txt",
+      "tool_calls": [],
+      "prompt_tokens": 679,
+      "completion_tokens": 34,
+      "cost_usd": 0.00042747,
+      "latency_ms": 214.57070799806388,
+      "timestamp": ""
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "list_downloaded_transcripts",
+      "arguments": {
+        "course_name": "stubbed-playlist"
+      },
+      "result": [
+        "1 - Introduction.txt",
+        "2 - Getting Started.txt",
+        "3 - Advanced Topics.txt"
+      ],
+      "latency_ms": 0.006041002052370459,
+      "error": null
+    }
+  ],
+  "total_cost_usd": 0.00081517,
+  "total_latency_ms": 545.7474990034825,
+  "total_prompt_tokens": 1308,
+  "total_completion_tokens": 55,
+  "error": null,
+  "metadata": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "max_iterations": 8
+  },
+  "run_id": "938dbaee2977",
+  "created_at": "2026-04-26T16:41:06+00:00"
+}

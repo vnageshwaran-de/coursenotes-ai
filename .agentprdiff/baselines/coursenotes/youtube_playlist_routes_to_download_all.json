@@ -1,0 +1,115 @@
+{
+  "case_name": "youtube_playlist_routes_to_download_all",
+  "suite_name": "coursenotes",
+  "input": "Download all transcripts from https://www.youtube.com/playlist?list=PLstub-eb1a-demo",
+  "output": "Transcripts for the YouTube playlist https://www.youtube.com/playlist?list=PLstub-eb1a-demo have been downloaded. The raw .vtt files are saved in ./output/stubbed-playlist/vtt and the clean .txt files are saved in ./output/stubbed-playlist/txt. A total of 3 .txt files were created: \n1 - Introduction.txt\n2 - Getting Started.txt\n3 - Advanced Topics.txt",
+  "llm_calls": [
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "Download all transcripts from https://www.youtube.com/playlist?list=PLstub-eb1a-demo"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "ryby84x6h",
+          "name": "download_all_transcripts",
+          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-eb1a-demo\"}"
+        }
+      ],
+      "prompt_tokens": 637,
+      "completion_tokens": 34,
+      "cost_usd": 0.00040269,
+      "latency_ms": 726.211000001058,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "Download all transcripts from https://www.youtube.com/playlist?list=PLstub-eb1a-demo"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "ryby84x6h",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-eb1a-demo\"}",
+                "name": "download_all_transcripts"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "ryby84x6h",
+          "content": "{\"success\": true, \"course_name\": \"stubbed-playlist\", \"vtt_folder\": \"./output/stubbed-playlist/vtt\", \"txt_folder\": \"./output/stubbed-playlist/txt\", \"txt_files_created\": 3, \"txt_files\": [\"1 - Introduction.txt\", \"2 - Getting Started.txt\", \"3 - Advanced Topics.txt\"], \"stdout\": \"[stub] downloaded 3/3\", \"stderr\": \"\"}"
+        }
+      ],
+      "output_text": "Transcripts for the YouTube playlist https://www.youtube.com/playlist?list=PLstub-eb1a-demo have been downloaded. The raw .vtt files are saved in ./output/stubbed-playlist/vtt and the clean .txt files are saved in ./output/stubbed-playlist/txt. A total of 3 .txt files were created: \n1 - Introduction.txt\n2 - Getting Started.txt\n3 - Advanced Topics.txt",
+      "tool_calls": [],
+      "prompt_tokens": 773,
+      "completion_tokens": 93,
+      "cost_usd": 0.00052954,
+      "latency_ms": 496.3920000009239,
+      "timestamp": ""
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "download_all_transcripts",
+      "arguments": {
+        "course_url": "https://www.youtube.com/playlist?list=PLstub-eb1a-demo"
+      },
+      "result": {
+        "success": true,
+        "course_name": "stubbed-playlist",
+        "vtt_folder": "./output/stubbed-playlist/vtt",
+        "txt_folder": "./output/stubbed-playlist/txt",
+        "txt_files_created": 3,
+        "txt_files": [
+          "1 - Introduction.txt",
+          "2 - Getting Started.txt",
+          "3 - Advanced Topics.txt"
+        ],
+        "stdout": "[stub] downloaded 3/3",
+        "stderr": ""
+      },
+      "latency_ms": 0.011791998986154795,
+      "error": null
+    }
+  ],
+  "total_cost_usd": 0.00093223,
+  "total_latency_ms": 1222.614792000968,
+  "total_prompt_tokens": 1410,
+  "total_completion_tokens": 127,
+  "error": null,
+  "metadata": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "max_iterations": 8
+  },
+  "run_id": "480c00b9d4a8",
+  "created_at": "2026-04-26T16:41:02+00:00"
+}

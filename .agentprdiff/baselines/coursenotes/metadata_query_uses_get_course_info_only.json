@@ -1,0 +1,220 @@
+{
+  "case_name": "metadata_query_uses_get_course_info_only",
+  "suite_name": "coursenotes",
+  "input": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only",
+  "output": "The playlist has 3 videos.",
+  "llm_calls": [
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "q9e16gy22",
+          "name": "get_course_info",
+          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}"
+        }
+      ],
+      "prompt_tokens": 638,
+      "completion_tokens": 29,
+      "cost_usd": 0.00039933000000000004,
+      "latency_ms": 398.3654170006048,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "q9e16gy22",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
+                "name": "get_course_info"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "q9e16gy22",
+          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
+        }
+      ],
+      "output_text": "",
+      "tool_calls": [
+        {
+          "id": "r32axzmwz",
+          "name": "get_course_info",
+          "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}"
+        }
+      ],
+      "prompt_tokens": 752,
+      "completion_tokens": 28,
+      "cost_usd": 0.0004658,
+      "latency_ms": 293.30900000059046,
+      "timestamp": ""
+    },
+    {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "input_messages": [
+        {
+          "role": "system",
+          "content": "You are coursenotes-ai, a YouTube transcript downloader agent. You support YouTube videos and playlists. When given a YouTube URL, use the available tools to fetch video info and download transcripts. Raw .vtt files and clean .txt files are saved in separate folders automatically. Always confirm what was downloaded and where the files were saved."
+        },
+        {
+          "role": "user",
+          "content": "How many videos are in this playlist? https://www.youtube.com/playlist?list=PLstub-info-only"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "q9e16gy22",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
+                "name": "get_course_info"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "q9e16gy22",
+          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
+        },
+        {
+          "content": null,
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": [
+            {
+              "id": "r32axzmwz",
+              "function": {
+                "arguments": "{\"course_url\":\"https://www.youtube.com/playlist?list=PLstub-info-only\"}",
+                "name": "get_course_info"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "r32axzmwz",
+          "content": "{\"_type\": \"playlist\", \"id\": \"PLstub\", \"title\": \"Stubbed Playlist\", \"entries\": [{\"id\": \"vid_001\", \"title\": \"01 - Introduction\"}, {\"id\": \"vid_002\", \"title\": \"02 - Getting Started\"}, {\"id\": \"vid_003\", \"title\": \"03 - Advanced Topics\"}]}"
+        }
+      ],
+      "output_text": "The playlist has 3 videos.",
+      "tool_calls": [],
+      "prompt_tokens": 866,
+      "completion_tokens": 8,
+      "cost_usd": 0.0005172600000000001,
+      "latency_ms": 976.8178329977673,
+      "timestamp": ""
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "get_course_info",
+      "arguments": {
+        "course_url": "https://www.youtube.com/playlist?list=PLstub-info-only"
+      },
+      "result": {
+        "_type": "playlist",
+        "id": "PLstub",
+        "title": "Stubbed Playlist",
+        "entries": [
+          {
+            "id": "vid_001",
+            "title": "01 - Introduction"
+          },
+          {
+            "id": "vid_002",
+            "title": "02 - Getting Started"
+          },
+          {
+            "id": "vid_003",
+            "title": "03 - Advanced Topics"
+          }
+        ]
+      },
+      "latency_ms": 0.020207997295074165,
+      "error": null
+    },
+    {
+      "name": "get_course_info",
+      "arguments": {
+        "course_url": "https://www.youtube.com/playlist?list=PLstub-info-only"
+      },
+      "result": {
+        "_type": "playlist",
+        "id": "PLstub",
+        "title": "Stubbed Playlist",
+        "entries": [
+          {
+            "id": "vid_001",
+            "title": "01 - Introduction"
+          },
+          {
+            "id": "vid_002",
+            "title": "02 - Getting Started"
+          },
+          {
+            "id": "vid_003",
+            "title": "03 - Advanced Topics"
+          }
+        ]
+      },
+      "latency_ms": 0.007000002369750291,
+      "error": null
+    }
+  ],
+  "total_cost_usd": 0.00138239,
+  "total_latency_ms": 1668.5194579986273,
+  "total_prompt_tokens": 2256,
+  "total_completion_tokens": 65,
+  "error": null,
+  "metadata": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "max_iterations": 8
+  },
+  "run_id": "268a3476af74",
+  "created_at": "2026-04-26T16:41:04+00:00"
+}
